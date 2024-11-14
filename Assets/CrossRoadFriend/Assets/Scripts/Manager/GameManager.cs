@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
     public int levelCount = 50;
-    public Camera camera = null;
+    private Camera camera;
     public LevelGenerator levelGenerator = null;
 
     private int currentCoins = 0;
     private int currentDistance = 0;
     private bool canPlay = false;
-    private AudioSource effect;
-    private AudioClip clip = null;
+    public AudioSource audioSource;
+    public AudioClip jumpClip;
+    public AudioClip deathClip;
+    public AudioClip coinClip;
 
     public event Action<int> coins;
     public event Action<int> distance;
@@ -37,6 +40,8 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        camera = Camera.main; //메인카메라세팅
+        audioSource = GetComponent<AudioSource>();
         poolDict = new Dictionary<int, Queue<GameObject>>();
         foreach(var pool in pools)
         {
@@ -53,9 +58,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        effect = GetComponent<AudioSource>();
-        clip = effect.clip;
-
         for (int i = 0; i < levelCount; i++)
         {
             levelGenerator.RandomGenerator();
@@ -75,7 +77,7 @@ public class GameManager : MonoBehaviour
     public void UpdateCoinCount(int value)
     {
         currentCoins += value;
-        effect.PlayOneShot(clip);
+        audioSource.PlayOneShot(coinClip);
         coins?.Invoke(currentCoins);
     }
 
@@ -116,6 +118,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        audioSource.PlayOneShot(deathClip);
         camera.GetComponent<CameraShake>().Shake();
         camera.GetComponent<CameraFollow>().enabled = false;
         gameOver?.Invoke();

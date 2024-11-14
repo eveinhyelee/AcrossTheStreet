@@ -5,15 +5,7 @@ using UnityEngine;
 public class CameraShake : MonoBehaviour
 {
     public float jumIter = 4.5f;
-
-    private void Update()
-    {
-        if(Input.GetKeyDown("c"))
-        {
-            Shake();
-        }
-    }
-
+    
     public void Shake()
     {
         float height = Mathf.PerlinNoise(jumIter, 0f) * 5;

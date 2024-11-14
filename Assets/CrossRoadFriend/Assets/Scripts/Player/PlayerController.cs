@@ -32,6 +32,10 @@ public class PlayerController : MonoBehaviour, IHit
 
         if (context.performed)
         {
+            AudioSource audioSource = GameManager.instance.audioSource;
+            AudioClip jumpClip = GameManager.instance.jumpClip;
+            audioSource.PlayOneShot(jumpClip);
+            
             if(input.magnitude == 0f)
             {
                 Moving(transform.position + moveValue);
